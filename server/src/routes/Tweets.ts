@@ -20,7 +20,7 @@ router.post("/create-tweet", async (req: Request, res: Response) => {
         tweet: userTweet,
         author: {
           connect: {
-            id: 1,
+            id: userId,
           },
         },
       },
@@ -52,7 +52,7 @@ router.get("/getAllTweets", async (req: Request, res: Response) => {
     await ConnectDb();
 
     const tweets = await prisma.tweet.findMany({});
-    
+
     return res.status(200).json({
       success: true,
       usersFound: tweets,
