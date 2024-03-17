@@ -1,9 +1,12 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, application } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import morgan from "morgan";
 
 const app = express();
+
+import Tweets from "./routes/Tweets";
+import User from './routes/User';
 
 // Middlewares
 app.use(express.json());
@@ -20,5 +23,9 @@ app.get("/", (req: Request, res: Response) => {
     message: "Hello, world!",
   });
 });
+
+// api
+app.use("/api", Tweets);
+app.use("/api", User);
 
 export default app;
