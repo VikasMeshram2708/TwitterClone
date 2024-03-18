@@ -1,30 +1,44 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { UserSchema, UserSchemaType } from "../Schemas/UserSchema";
 import { ZodError } from "zod";
 import toast from "react-hot-toast";
+import { FaEyeSlash } from "react-icons/fa6";
+import { IoEye } from "react-icons/io5";
+import { useState } from "react";
+import {
+  UserLoginSchema,
+  UserLoginSchemaType,
+} from "../Schemas/UserLoginSchema";
 const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
 
 export default function Login() {
-
-  console.log('uri', BASE_URI)
+  const [toggleEye, setToggleEye] = useState(false);
+  console.log("uri", BASE_URI);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserSchemaType>();
+  } = useForm<UserLoginSchemaType>();
 
-  
-
-  const handleLoginForm: SubmitHandler<UserSchemaType> = async (data) => {
+  const handleLoginForm: SubmitHandler<UserLoginSchemaType> = async (data) => {
     try {
-      UserSchema.parse(data);
+      // Sanitize the incoming data
+      UserLoginSchema.parse(data);
       console.log("data", data);
-      // const respnose = await fetch(`${BASE_URI}/api/login`)
-      return new Promise((resolve) => {
-        toast.success("User Logged In successfully.");
-        resolve(data);
+      const response = await fetch(`${BASE_URI}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
+      const result = await response.json();
+      console.log("res", result);
+
+      if (!response.ok) {
+        return toast.error(result?.message);
+      }
+      return toast.success(result?.message);
     } catch (e) {
       const err = e as Error;
       if (e instanceof ZodError) {
@@ -58,18 +72,33 @@ export default function Login() {
             </p>
           )}
         </div>
-        <div className="mb-6">
+        <div className="mb-6 relative">
           <label htmlFor="password" className="block text-aqua font-bold mb-2">
             Password
           </label>
           <input
-            type="password"
+            type={toggleEye ? "text" : "password"}
             placeholder="Enter Password"
             className="w-full px-3 py-2 rounded-md input input-bordered bg-black/30 text-aqua focus:outline-none focus:ring-2 focus:ring-aqua"
             {...register("password", {
               required: true,
             })}
           />
+          {toggleEye && (
+            <IoEye
+              onClick={() => setToggleEye((prev) => !prev)}
+              className="absolute right-3 bottom-4 cursor-pointer"
+              size={20}
+            />
+          )}
+          {!toggleEye && (
+            <FaEyeSlash
+              onClick={() => setToggleEye((prev) => !prev)}
+              className="absolute right-3 bottom-4 cursor-pointer"
+              size={20}
+            />
+          )}
+
           {errors?.password && (
             <p className="text-red-500 text-[1.2rem] font-semibold">
               {errors?.password?.message}
