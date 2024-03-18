@@ -20,6 +20,7 @@ model Tweet {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tweet     String   @db.VarChar(255)
+  imageUri  String?
   author    User     @relation("AuthorTweets", fields: [authorId], references: [id], onDelete: Cascade)
   authorId  Int
 
@@ -27,10 +28,11 @@ model Tweet {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  tweets    Tweet[]  @relation("AuthorTweets")
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  name       String
+  password   String
+  tweets     Tweet[]  @relation("AuthorTweets")
+  avatar     String?
   created_at DateTime @default(now())
 }

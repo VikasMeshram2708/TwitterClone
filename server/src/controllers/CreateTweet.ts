@@ -2,28 +2,43 @@ import { Request, Response } from "express";
 import ConnectDb from "../Db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import prisma from "../helpers/Prisma";
+import { TweetsSchema } from "../models/Tweets";
 
-
-export const CreateTweet  = async (req: Request, res: Response) => {
+export const CreateTweet = async (req: Request, res: Response) => {
   try {
     const reqBody = req.body;
 
-    const { tweet: userTweet, id: userId } = reqBody;
+    const { tweet, id, imageUri } = reqBody;
 
     // connec to db
     ConnectDb();
 
-    // make query to DB
+    // Sanitize the incoming data
+    TweetsSchema.parse({ tweet, id, imageUri });
+
+    // Insert Data into DB
     await prisma.tweet.create({
       data: {
-        tweet: userTweet,
+        tweet,
+        imageUri,
         author: {
           connect: {
-            id: userId,
+            id,
           },
         },
       },
     });
+
+    // await prisma.tweet.create({
+    //   data: {
+    //     tweet: userTweet,
+    //     author: {
+    //       connect: {
+    //         id: userId,
+    //       },
+    //     },
+    //   },
+    // });
 
     return res.status(200).json({
       success: true,
@@ -42,4 +57,4 @@ export const CreateTweet  = async (req: Request, res: Response) => {
       message: err?.message,
     });
   }
-}
+};
