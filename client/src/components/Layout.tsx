@@ -6,6 +6,7 @@ import Contact from "../pages/Contact";
 import Error from "../pages/Error";
 import Login from "../pages/Login";
 import SignUp from "../pages/Signup";
+import Tweets from "../pages/Tweets";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignUp />,
+      },
+      {
+        path: "tweets",
+        element: <Tweets />,
       },
     ],
   },
