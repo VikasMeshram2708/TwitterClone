@@ -1,8 +1,10 @@
+import Navbar from "./components/Navbar";
+
 const App = () => {
   return (
-    <section>
-      <h1>Hello,World!</h1>
-    </section>
+    <>
+      <Navbar />
+    </>
   );
 };
 
