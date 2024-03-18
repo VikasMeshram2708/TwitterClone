@@ -3,18 +3,24 @@ import { Link } from "react-router-dom";
 import { UserSchema, UserSchemaType } from "../Schemas/UserSchema";
 import { ZodError } from "zod";
 import toast from "react-hot-toast";
+const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
 
 export default function Login() {
+
+  console.log('uri', BASE_URI)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<UserSchemaType>();
 
+  
+
   const handleLoginForm: SubmitHandler<UserSchemaType> = async (data) => {
     try {
       UserSchema.parse(data);
       console.log("data", data);
+      // const respnose = await fetch(`${BASE_URI}/api/login`)
       return new Promise((resolve) => {
         toast.success("User Logged In successfully.");
         resolve(data);
