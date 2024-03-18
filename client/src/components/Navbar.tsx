@@ -59,7 +59,9 @@ export default function Navbar() {
             </li>
           </ul>
         </div>
-        <Link to="/" className="btn btn-ghost text-xl text-[--acc]">Twitter</Link>
+        <Link to="/" className="btn btn-ghost text-xl text-[--acc]">
+          Twitter
+        </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="text-[--acc] menu menu-horizontal px-1">
@@ -98,7 +100,7 @@ export default function Navbar() {
           type="button"
           className="px-4 py-2 hover:bg-[--acc] hover:text-black transition font-semibold text-white border-2 border-[--acc] rounded"
         >
-          Login
+          <Link to="/login">Login</Link>
         </button>
       </div>
     </nav>
