@@ -7,6 +7,7 @@ import Error from "../pages/Error";
 import Login from "../pages/Login";
 import SignUp from "../pages/Signup";
 import Tweets from "../pages/Tweets";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -36,7 +37,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "tweets",
-        element: <Tweets />,
+        element: (
+          <ProtectedRoute>
+            <Tweets />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
