@@ -2,37 +2,31 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { Request, Response } from "express";
 import ConnectDb from "../Db";
 import prisma from "../helpers/Prisma";
-import { UserSchema } from "../models/User";
 import { ZodError } from "zod";
-import bcrypt from "bcryptjs";
+import { DeleteUserSchema } from "../models/DeleteUser";
 
-export const CreateUser = async (req: Request, res: Response) => {
+export const DeleteUser = async (req: Request, res: Response) => {
   try {
     const reqBody = req.body;
 
-    const { name, email, password } = reqBody;
+    const { email } = reqBody;
 
     // Sanitize the Incoming Data
-    UserSchema.parse({ name, email, password });
-
-    // hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    DeleteUserSchema.parse({ email });
 
     // connec to db
     ConnectDb();
 
     // make query to DB
-    await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
+    await prisma.user.delete({
+      where: {
+        email: email,
       },
     });
 
     return res.status(200).json({
       success: true,
-      message: "User Created Successfully",
+      message: "User Deleted Successfully",
     });
   } catch (e) {
     const err = e as Error;
