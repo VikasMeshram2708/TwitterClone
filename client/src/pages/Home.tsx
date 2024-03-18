@@ -1,7 +1,9 @@
+import Carousel from "../components/Carousel";
+
 export default function Home() {
   return (
-    <div>
-      <h1>Homepage</h1>
-    </div>
+    <section className="min-h-screen">
+      <Carousel />
+    </section>
   );
 }
