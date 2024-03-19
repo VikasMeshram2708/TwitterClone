@@ -1,8 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
+import { destroyCookie, parseCookies } from "nookies";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const { pathname } = useLocation();
 
+  const isLoggedIn = document.cookie;
+  const cookieValue = parseCookies(null, isLoggedIn);
+  const isAuthenticated = cookieValue?.twitterAuth;
+
+  const handleLogout = async () => {
+    destroyCookie(null, "twitterAuth");
+    toast.success("Logged Out.");
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      resolve();
+    });
+  };
   return (
     <nav className="navbar border-b-2 border-[--acc]">
       <div className="navbar-start">
@@ -96,12 +112,23 @@ export default function Navbar() {
         </ul>
       </div>
       <div className="navbar-end">
-        <button
-          type="button"
-          className="px-4 py-2 hover:bg-[--acc] hover:text-black transition font-semibold text-white border-2 border-[--acc] rounded"
-        >
-          <Link to="/login">Login</Link>
-        </button>
+        {isAuthenticated && (
+          <button
+            onClick={handleLogout}
+            type="button"
+            className="px-4 py-2  bg-red-600 hover:bg-red-500 text-white font-semibold rounded-md"
+          >
+            Logout
+          </button>
+        )}
+        {!isAuthenticated && (
+          <button
+            type="button"
+            className="px-4 py-2 hover:bg-[--acc] hover:text-black transition font-semibold text-white border-2 border-[--acc] rounded"
+          >
+            <Link to="/login">Login</Link>
+          </button>
+        )}
       </div>
     </nav>
   );

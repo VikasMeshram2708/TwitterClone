@@ -37,9 +37,17 @@ export const UserLogin = async (req: Request, res: Response) => {
       });
     }
 
+    const userData = {
+      userId: user?.id,
+      name: user?.name,
+      email: user?.name,
+      avatar: user?.avatar,
+    };
+
     return res.status(200).json({
       success: true,
       message: "User Logged In.",
+      data: userData,
     });
   } catch (e) {
     const err = e as Error;

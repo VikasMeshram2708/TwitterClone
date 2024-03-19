@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ZodError } from "zod";
 import toast from "react-hot-toast";
 import { FaEyeSlash } from "react-icons/fa6";
@@ -10,13 +10,26 @@ import {
   UserLoginSchemaType,
 } from "../Schemas/UserLoginSchema";
 const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
+import nookies from "nookies";
 
 export default function Login() {
+  // const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const isLoggedIn = document.cookie;
+  console.log("cookies", isLoggedIn);
+
+  // useEffect(() => {
+  //   if (pathname === "/login" && isLoggedIn) {
+  //     return navigate("/");
+  //   }
+  // }, [isLoggedIn,navigate, pathname ]);
   const [toggleEye, setToggleEye] = useState(false);
   console.log("uri", BASE_URI);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<UserLoginSchemaType>();
 
@@ -33,12 +46,22 @@ export default function Login() {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      console.log("res", result);
+      // console.log("res", result.data);
 
       if (!response.ok) {
         return toast.error(result?.message);
       }
-      return toast.success(result?.message);
+
+      // Set Cookies
+      nookies.set(null, "twitterAuth", JSON.stringify(result.data));
+      reset();
+      toast.success(result?.message);
+      return new Promise<void>((resolve) => {
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+        resolve()
+      });
     } catch (e) {
       const err = e as Error;
       if (e instanceof ZodError) {
