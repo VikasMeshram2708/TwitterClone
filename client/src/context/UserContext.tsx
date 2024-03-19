@@ -1,7 +1,8 @@
 import { createContext } from "react";
-import { UserLoginSchemaType } from "../Schemas/UserLoginSchema";
+import { LoginInputInterface } from "../interfaces/LoginInputInterface";
 
 interface ContextDataType {
-  LoginFunction: (data: UserLoginSchemaType) => Promise<string>;
+  LoginFunction: (data: LoginInputInterface) => Promise<string>;
+  isAuthenticated: string | null
 }
 export const UserContext = createContext<ContextDataType | null>(null);

@@ -1,18 +1,15 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { parseCookies } from "nookies";
+import { UseUserContext } from "../context/UserState";
 
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const isLoggedIn = document.cookie;
-  const cookieValue = parseCookies(null, isLoggedIn);
-  const isAuthenticated = cookieValue?.twitterAuth;
-  console.log("cookies", cookieValue.twitterAuth);
-
-  // console.log(isAuthenticated);
+  
+  const {isAuthenticated} = UseUserContext();
+  
   const navigate = useNavigate();
-  // console.log(pathname);
+
   useEffect(() => {
-    if (isAuthenticated === undefined) {
+    if (!isAuthenticated) {
       return navigate("/login");
     }
   }, [isAuthenticated, navigate]);

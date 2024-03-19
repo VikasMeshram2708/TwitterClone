@@ -5,7 +5,7 @@ export const UserLoginSchema = z.object({
   password: z
     .string()
     .min(5, {
-      message: "Password must contain at least 2 character(s)",
+      message: "Password must contain at least 5 character(s)",
     })
     .max(100, {
       message: "Password maximum limit is 100 character(s)",

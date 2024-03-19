@@ -7,10 +7,11 @@ export default function Navbar() {
 
   const isLoggedIn = document.cookie;
   const cookieValue = parseCookies(null, isLoggedIn);
-  const isAuthenticated = cookieValue?.twitterAuth;
+  const isAuthenticated = cookieValue?.TwtiterAuth;
 
   const handleLogout = async () => {
-    destroyCookie(null, "twitterAuth");
+    destroyCookie(null, "TwtiterAuth");
+    localStorage.removeItem("isLoggedIn");
     toast.success("Logged Out.");
     return new Promise<void>((resolve) => {
       setTimeout(() => {

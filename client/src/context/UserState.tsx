@@ -1,13 +1,14 @@
-import { ReactNode, useContext } from "react";
+import { ReactNode, useContext, useMemo } from "react";
 import { UserContext } from "./UserContext";
-import { UserLoginSchemaType } from "../Schemas/UserLoginSchema";
-import { ZodError } from "zod";
 import toast from "react-hot-toast";
+import { LoginInputInterface } from "../interfaces/LoginInputInterface";
 const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
 import nookies from "nookies";
 
 export const UserState = ({ children }: { children: ReactNode }) => {
-  const LoginFunction = async (data: UserLoginSchemaType) => {
+
+  // Login Function
+  const LoginFunction = async (data: LoginInputInterface) => {
     try {
       const response = await fetch(`${BASE_URI}/api/login`, {
         method: "POST",
@@ -17,36 +18,44 @@ export const UserState = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify(data),
       });
       const result = await response.json();
-      // console.log("res", result.data);
 
       if (!response.ok) {
         return toast.error(result?.message);
       }
 
-      // Set Cookies
-      nookies.set(null, "twitterAuth", JSON.stringify(result.data), {
+      // Set the Cookies
+      nookies.set(null, "TwtiterAuth", JSON.stringify(result?.data), {
         maxAge: 60 * 60,
-        secure: true,
         path: "/",
+        secure: true,
         sameSite: "strict",
       });
+
+      localStorage.setItem("isLoggedIn", JSON.stringify(true));
+
       return toast.success(result?.message);
     } catch (e) {
       const err = e as Error;
-      if (e instanceof ZodError) {
-        return toast.error(e?.errors[0]?.message);
-      }
-      return toast.error(err?.message);
+      return toast.error(
+        `Something went wrong. Please try again. : ${err?.message}`
+      );
     }
   };
+
+  // Authenticaed Function
+  const isAuthenticated = useMemo(() => {
+    const userLoggedIn = localStorage.getItem("isLoggedIn");
+    return userLoggedIn;
+  }, []);
+
   return (
-    <UserContext.Provider value={{ LoginFunction }}>
+    <UserContext.Provider value={{ LoginFunction, isAuthenticated }}>
       {children}
     </UserContext.Provider>
   );
 };
 
-export const useUserContext = () => {
+export const UseUserContext = () => {
   const userContextData = useContext(UserContext);
   if (!userContextData) {
     throw new Error("Context must be wrapped in the Provider.");
