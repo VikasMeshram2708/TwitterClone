@@ -4,9 +4,9 @@ import toast from "react-hot-toast";
 import { LoginInputInterface } from "../interfaces/LoginInputInterface";
 const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
 import nookies from "nookies";
+import { SignUpInputInterface } from "../interfaces/SignUpInputInterface";
 
 export const UserState = ({ children }: { children: ReactNode }) => {
-
   // Login Function
   const LoginFunction = async (data: LoginInputInterface) => {
     try {
@@ -42,6 +42,30 @@ export const UserState = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Sign Up Function
+  const SignUpFunction = async (data: SignUpInputInterface) => {
+    try {
+      const response = await fetch(`${BASE_URI}/api/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        return toast.error(result?.message);
+      }
+      return toast.success(result?.message);
+    } catch (e) {
+      const err = e as Error;
+      return toast.error(
+        `Something went wrong. Please try again. : ${err?.message}`
+      );
+    }
+  };
+
   // Authenticaed Function
   const isAuthenticated = useMemo(() => {
     const userLoggedIn = localStorage.getItem("isLoggedIn");
@@ -49,7 +73,9 @@ export const UserState = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ LoginFunction, isAuthenticated }}>
+    <UserContext.Provider
+      value={{ LoginFunction, isAuthenticated, SignUpFunction }}
+    >
       {children}
     </UserContext.Provider>
   );

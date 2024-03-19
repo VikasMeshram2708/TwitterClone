@@ -1,36 +1,29 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import { UserSchema, UserSchemaType } from "../Schemas/UserSchema";
-import { ZodError } from "zod";
-import toast from "react-hot-toast";
+import { UseUserContext } from "../context/UserState";
+import { FaEyeSlash } from "react-icons/fa6";
+import { IoEye } from "react-icons/io5";
 
 export default function SignUp() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UserSchemaType>();
+  const [toggleEye, setToggleEye] = useState(false);
 
-  const handleSignUpForm: SubmitHandler<UserSchemaType> = async (data) => {
-    try {
-      UserSchema.parse(data);
-      console.log("data", data);
-      return new Promise((resolve) => {
-        toast.success("User Registere successfully.");
-        resolve(data);
-      });
-    } catch (e) {
-      const err = e as Error;
-      if (e instanceof ZodError) {
-        return toast.error(e?.errors[0]?.message);
-      }
-      return toast.error(err?.message);
-    }
+  const { SignUpFunction } = UseUserContext();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await SignUpFunction({ name, email, password });
+    setName("");
+    setEmail("");
+    setPassword("");
   };
+
   return (
     <section className="min-h-screen flex items-center justify-center">
       <form
-        onSubmit={handleSubmit(handleSignUpForm)}
+        onSubmit={handleSignUp}
         className="w-full max-w-md p-8 rounded-lg shadow-lg border-2 border-[--acc]"
       >
         <h1 className="text-center text-lg sm:text-[2rem] mb-10">Sign Up</h1>
@@ -39,53 +32,55 @@ export default function SignUp() {
             Name
           </label>
           <input
+            value={name}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setName(e.target.value)
+            }
             type="text"
             placeholder="Enter Name"
             className="w-full px-3 py-2 input input-bordered rounded-md bg-black/30 text-aqua focus:outline-none focus:ring-2 focus:ring-aqua"
-            {...register("name", {
-              required: true,
-            })}
           />
-          {errors?.name && (
-            <p className="text-red-500 text-[1.2rem] font-semibold">
-              {errors?.name?.message}
-            </p>
-          )}
         </div>
         <div className="mb-6">
           <label htmlFor="email" className="block text-aqua font-bold mb-2">
             Email
           </label>
           <input
+            value={email}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             type="email"
             placeholder="Enter Email"
             className="w-full px-3 py-2 input input-bordered rounded-md bg-black/30 text-aqua focus:outline-none focus:ring-2 focus:ring-aqua"
-            {...register("email", {
-              required: true,
-            })}
           />
-          {errors?.email && (
-            <p className="text-red-500 text-[1.2rem] font-semibold">
-              {errors?.email?.message}
-            </p>
-          )}
         </div>
-        <div className="mb-6">
+        <div className="mb-6 relative">
           <label htmlFor="password" className="block text-aqua font-bold mb-2">
             Password
           </label>
           <input
-            type="password"
+            value={password}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
+            type={toggleEye ? "text" : "password"}
             placeholder="Enter Password"
             className="w-full px-3 py-2 rounded-md input input-bordered bg-black/30 text-aqua focus:outline-none focus:ring-2 focus:ring-aqua"
-            {...register("password", {
-              required: true,
-            })}
           />
-          {errors?.password && (
-            <p className="text-red-500 text-[1.2rem] font-semibold">
-              {errors?.password?.message}
-            </p>
+          {toggleEye && (
+            <IoEye
+              onClick={() => setToggleEye((prev) => !prev)}
+              className="absolute right-3 bottom-4 cursor-pointer"
+              size={20}
+            />
+          )}
+          {!toggleEye && (
+            <FaEyeSlash
+              onClick={() => setToggleEye((prev) => !prev)}
+              className="absolute right-3 bottom-4 cursor-pointer"
+              size={20}
+            />
           )}
         </div>
         <div className="flex items-center justify-between">
