@@ -1,4 +1,5 @@
-import { ReactNode, useContext, useMemo } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { UserContext } from "./UserContext";
 import toast from "react-hot-toast";
 import { LoginInputInterface } from "../interfaces/LoginInputInterface";
@@ -7,6 +8,8 @@ import nookies from "nookies";
 import { SignUpInputInterface } from "../interfaces/SignUpInputInterface";
 
 export const UserState = ({ children }: { children: ReactNode }) => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   // Login Function
   const LoginFunction = async (data: LoginInputInterface) => {
     try {
@@ -69,8 +72,23 @@ export const UserState = ({ children }: { children: ReactNode }) => {
   // Authenticaed Function
   const isAuthenticated = useMemo(() => {
     const userLoggedIn = localStorage.getItem("isLoggedIn");
+    setInterval(() => {}, 3600);
     return userLoggedIn;
   }, []);
+
+  useEffect(() => {
+    // Function to clear localStorage after 2 hours
+    const clearLocalStorage = () => {
+      localStorage.removeItem("isLoggedIn");
+    };
+  
+    // Set interval to clear localStorage every 2 hours
+    const interval = setInterval(clearLocalStorage, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
+  
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array ensures the effect runs only once on mount
+  
 
   return (
     <UserContext.Provider
