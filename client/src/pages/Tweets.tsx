@@ -1,9 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useMutation } from "@tanstack/react-query";
-import { ChangeEvent, FormEvent, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import { FaRegEdit } from "react-icons/fa";
 import { FaDeleteLeft } from "react-icons/fa6";
+import { TweetsInterface } from "../interfaces/TweetsInterface";
 const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
 
 interface Tweet {
@@ -16,6 +23,8 @@ export default function Tweets() {
   const [editId, setEditId] = useState<number>();
   const [toggleEdit, setToggleEdit] = useState(false);
   const userId = localStorage.getItem("CurrentUserId");
+  const [myTweets, setMyTweets] = useState<TweetsInterface[]>([])
+
   // @ts-ignore
   const parsedUserId = JSON.parse(userId);
   // Add Tweet
@@ -87,6 +96,20 @@ export default function Tweets() {
     setTweet(actualTweet?.tweet as string);
   };
 
+  // Retrieve all tweets
+  const RetrieveAllTweets = useCallback(async () => {
+    const response = await fetch(
+      `${BASE_URI}/api/getAllTweets/${parsedUserId}`
+    );
+    const result = await response.json();
+    console.log(result.data.tweets);
+    setMyTweets(result.data.tweets);
+  }, [parsedUserId]);
+
+  useEffect(() => {
+    RetrieveAllTweets();
+  }, [RetrieveAllTweets]);
+
   return (
     <section className="min-h-screen">
       <h1 className="text-center text-4xl mt-10">Tweet</h1>
@@ -113,12 +136,12 @@ export default function Tweets() {
         </div>
       </form>
       <ul className="max-w-7xl mt-10 mx-auto grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {tweets?.map((tweet) => (
+        {myTweets?.map((tweet) => (
           <div
             key={tweet?.id}
             className="flex items-center justify-between p-2 rounded-md  border-2 border-[--acc]"
           >
-            <li className="text-[1.2rem]">{tweet?.tweet}</li>
+            <li className="text-[1.2rem]">{tweet.tweet}</li>
             <div className="flex items-center gap-5">
               <FaRegEdit
                 onClick={() => handleEdit(tweet?.id)}
