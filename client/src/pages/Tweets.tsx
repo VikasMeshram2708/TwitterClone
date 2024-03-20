@@ -3,6 +3,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { FaRegEdit } from "react-icons/fa";
 import { FaDeleteLeft } from "react-icons/fa6";
+const BASE_URI = import.meta.env.VITE_PUBLIC_SERVER_URL;
 
 interface Tweet {
   id: number;
@@ -13,6 +14,8 @@ export default function Tweets() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [editId, setEditId] = useState<number>();
   const [toggleEdit, setToggleEdit] = useState(false);
+  const id = localStorage.getItem("userId");
+  console.log("tweets-userid", id);
 
   // Add Tweet
   const handleTweet = async () => {
@@ -27,6 +30,18 @@ export default function Tweets() {
       setToggleEdit(false);
       toast.success("Tweet Updated.");
     } else {
+      const response = await fetch(`${BASE_URI}/api/create-tweet`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tweet, id }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        return toast.error(result?.message);
+      }
+      // toast.success(result?.message);
       setTweets((prev) => [
         ...prev,
         {

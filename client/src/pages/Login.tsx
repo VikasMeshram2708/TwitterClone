@@ -26,9 +26,9 @@ export default function Login() {
     setPassword("");
     new Promise<void>((resolve) => {
       navigate("/");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1500);
       resolve();
     });
   };

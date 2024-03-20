@@ -1,18 +1,19 @@
 import { ReactNode, useEffect } from "react";
+import AuthenticatedOrNot from "../helpers/Cookie";
 import { useNavigate } from "react-router-dom";
-import { UseUserContext } from "../context/UserState";
 
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  
-  const {isAuthenticated} = UseUserContext();
-  
   const navigate = useNavigate();
-
   useEffect(() => {
-    if (!isAuthenticated) {
+    const value = AuthenticatedOrNot();
+    const parsedValue = value.TwtiterAuth;
+    if (parsedValue === undefined) {
       return navigate("/login");
     }
-  }, [isAuthenticated, navigate]);
+    console.log("protected", parsedValue);
+    // if(!parsedValue) {
+    // }
+  }, [navigate]);
 
   return <section>{children}</section>;
 };

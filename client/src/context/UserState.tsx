@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, useContext} from "react";
 import { UserContext } from "./UserContext";
 import toast from "react-hot-toast";
 import { LoginInputInterface } from "../interfaces/LoginInputInterface";
@@ -8,9 +7,11 @@ import nookies from "nookies";
 import { SignUpInputInterface } from "../interfaces/SignUpInputInterface";
 
 export const UserState = ({ children }: { children: ReactNode }) => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+
 
   // Login Function
+
   const LoginFunction = async (data: LoginInputInterface) => {
     try {
       const response = await fetch(`${BASE_URI}/api/login`, {
@@ -21,20 +22,20 @@ export const UserState = ({ children }: { children: ReactNode }) => {
         body: JSON.stringify(data),
       });
       const result = await response.json();
+      console.log("res", result);
 
       if (!response.ok) {
         return toast.error(result?.message);
       }
+      // setUserId(result?.data?.userId);
 
       // Set the Cookies
-      nookies.set(null, "TwtiterAuth", JSON.stringify(result?.data), {
+      nookies.set(null, "TwtiterAuth", JSON.stringify(result.data), {
         maxAge: 60 * 60,
         path: "/",
         secure: true,
         sameSite: "strict",
       });
-
-      localStorage.setItem("isLoggedIn", JSON.stringify(true));
 
       return toast.success(result?.message);
     } catch (e) {
@@ -68,31 +69,9 @@ export const UserState = ({ children }: { children: ReactNode }) => {
       );
     }
   };
-
-  // Authenticaed Function
-  const isAuthenticated = useMemo(() => {
-    const userLoggedIn = localStorage.getItem("isLoggedIn");
-    setInterval(() => {}, 3600);
-    return userLoggedIn;
-  }, []);
-
-  useEffect(() => {
-    // Function to clear localStorage after 2 hours
-    const clearLocalStorage = () => {
-      localStorage.removeItem("isLoggedIn");
-    };
-  
-    // Set interval to clear localStorage every 2 hours
-    const interval = setInterval(clearLocalStorage, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
-  
-    // Clear interval on component unmount
-    return () => clearInterval(interval);
-  }, []); // Empty dependency array ensures the effect runs only once on mount
-  
-
   return (
     <UserContext.Provider
-      value={{ LoginFunction, isAuthenticated, SignUpFunction }}
+      value={{ LoginFunction, SignUpFunction }}
     >
       {children}
     </UserContext.Provider>
