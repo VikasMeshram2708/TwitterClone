@@ -13,7 +13,7 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     }
     const parsedValue2 = JSON.parse(parsedValue);
     localStorage.setItem("CurrentUserId", parsedValue2.userId);
-    console.log("id", parsedValue2.userId);
+    // console.log("id", parsedValue2.userId);
   }, [navigate]);
 
   return <section>{children}</section>;

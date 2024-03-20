@@ -33,7 +33,7 @@ export default function Tweets() {
       tweet: tweet,
       id: parsedUserId,
     };
-    console.log("tweeted: ", tweetData);
+    // console.log("tweeted: ", tweetData);
 
     if (toggleEdit && editId !== undefined) {
       setTweets((prevTweets) => {
@@ -72,9 +72,21 @@ export default function Tweets() {
   };
 
   // Delete Tweets
-  const handleDelete = (tweetId: number) => {
+  const handleDelete = async (tweetId: number) => {
     setTweets(tweets?.filter((d) => d.id !== tweetId));
-    return toast.success("Tweet Removed.");
+    const response = await fetch(`${BASE_URI}/api/delete-tweet`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tweetId: tweetId }),
+    });
+    toast.success("Tweet Removed.");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
+    return response.json();
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
