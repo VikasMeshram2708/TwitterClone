@@ -7,3 +7,4 @@
 
 * [x] Sanitize the incoming data using zod.
 
+* [ ] Delete API for Tweets.

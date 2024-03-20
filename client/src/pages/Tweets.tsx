@@ -23,7 +23,7 @@ export default function Tweets() {
   const [editId, setEditId] = useState<number>();
   const [toggleEdit, setToggleEdit] = useState(false);
   const userId = localStorage.getItem("CurrentUserId");
-  const [myTweets, setMyTweets] = useState<TweetsInterface[]>([])
+  const [myTweets, setMyTweets] = useState<TweetsInterface[]>([]);
 
   // @ts-ignore
   const parsedUserId = JSON.parse(userId);
@@ -64,6 +64,9 @@ export default function Tweets() {
         },
       ]);
       toast.success("Tweet posted");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
       Promise.resolve();
     }
   };
@@ -102,7 +105,7 @@ export default function Tweets() {
       `${BASE_URI}/api/getAllTweets/${parsedUserId}`
     );
     const result = await response.json();
-    console.log(result.data.tweets);
+    // console.log(result.data.tweets);
     setMyTweets(result.data.tweets);
   }, [parsedUserId]);
 
