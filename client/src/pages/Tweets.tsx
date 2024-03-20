@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useMutation } from "@tanstack/react-query";
 import { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
@@ -14,12 +15,16 @@ export default function Tweets() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [editId, setEditId] = useState<number>();
   const [toggleEdit, setToggleEdit] = useState(false);
-  const id = localStorage.getItem("userId");
-  console.log("tweets-userid", id);
-
+  const userId = localStorage.getItem("CurrentUserId");
+  // @ts-ignore
+  const parsedUserId = JSON.parse(userId);
   // Add Tweet
   const handleTweet = async () => {
-    console.log("my,tweet", tweet);
+    const tweetData = {
+      tweet: tweet,
+      id: parsedUserId,
+    };
+    console.log("tweeted: ", tweetData);
 
     if (toggleEdit && editId !== undefined) {
       setTweets((prevTweets) => {
@@ -35,7 +40,7 @@ export default function Tweets() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tweet, id }),
+        body: JSON.stringify(tweetData),
       });
       const result = await response.json();
       if (!response.ok) {

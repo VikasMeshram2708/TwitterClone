@@ -11,8 +11,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     destroyCookie(null, "TwtiterAuth");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userId");
+    localStorage.removeItem("CurrentUserId");
     toast.success("Logged Out.");
     return new Promise<void>((resolve) => {
       setTimeout(() => {
