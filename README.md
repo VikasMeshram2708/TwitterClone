@@ -2,12 +2,16 @@
 
 ### Todo
 
-* [ ] Sidebar
+* [x] Sidebar
 
-* [ ] RightBar
+* [x] RightBar
     
-    * [ ] TweetInput
+    * [x] TweetInput
 
-    * [ ] RecentTweets
+    * [x] RecentTweets
 
 * [ ] Like, Share, Bookmark functionalities.
+
+### API
+
+* [ ] CRUD Tweets API.
