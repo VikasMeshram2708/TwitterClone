@@ -3,31 +3,50 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useMutation } from "react-query";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { SingleTweetSchema } from "@/models/TweetModel";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function TweetInput() {
+  const { user, isLoading } = useUser();
+  // @ts-ignore
+  // const { saveTweet } = useTweet();
+
   const [tweetMsg, setTweetMsg] = useState("");
 
-  const mutation = useMutation({
-    mutationFn: async (tweetInput: string) => {
-      if (!tweetInput.trim()) {
-        throw new Error("Tweet can't be empty!");
-      }
-      console.log(tweetInput);
-      // Simulating an API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    },
-    onSuccess: () => {
-      setTweetMsg("");
-    },
-    onError: (error: Error) => {
-      alert(error.message);
-    },
-  });
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    mutation.mutate(tweetMsg);
+      if (!user) {
+        return toast.error("Login first");
+      }
+
+      const tweetConfig = {
+        author: user?.name,
+        authorEmail: user?.email,
+        content: tweetMsg,
+      };
+      const response = await fetch("/api/createtweet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tweetConfig),
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (!response.ok) {
+        alert(result?.message);
+        console.log("Failed to tweet.");
+      }
+      toast.success("Tweeted");
+      Promise.resolve();
+    } catch (error) {
+      console.log(`Something went wrong. Failed to tweet. ${error}`);
+    }
   };
 
   return (
@@ -43,17 +62,18 @@ export default function TweetInput() {
           }
           type="text"
           placeholder="enter your message here..."
-          disabled={mutation.isLoading}
+          disabled={isLoading}
         />
-        <Button 
-          className="mt-5" 
+        <Button
+          className="mt-5"
           variant="outline"
           type="submit"
-          disabled={mutation.isLoading}
+          disabled={isLoading}
         >
-          {mutation.isLoading ? "Sending..." : "Send"}
+          {isLoading ? "loading..." : "Send"}
         </Button>
       </form>
+      <Toaster />
     </section>
   );
 }

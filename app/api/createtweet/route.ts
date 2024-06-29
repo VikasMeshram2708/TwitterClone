@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (request: NextRequest) => {
   try {
     const incomingData: TweetSchemaType = await request.json();
-    console.log("incd", incomingData);
+    console.log(incomingData);
 
     // Sanitize the incoming data
     TweetSchema.parse(incomingData);
@@ -20,7 +20,7 @@ export const POST = async (request: NextRequest) => {
       data: {
         author: incomingData?.author,
         content: incomingData?.content,
-        authorEmail:incomingData?.authorEmail
+        authorEmail: incomingData?.authorEmail,
       },
     });
 

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useTweet } from "@/app/context/TweetState";
 import { SampleTweets } from "@/seed/SampleTweets";
@@ -19,7 +19,12 @@ export default function RecentTweets() {
               </div>
               <div>
                 <h3 className="text-white font-semibold">{tweet.author}</h3>
-                <p className="text-slate-400 text-sm">{tweet?.createdAt}</p>
+                <p className="text-slate-400 text-sm">
+                  {new Date("2024-06-28T09:15:00Z").toLocaleDateString('en-US',{
+                    month:'short',
+                    day:"numeric"
+                  })}
+                </p>
               </div>
             </div>
             <p className="text-white">{tweet.content}</p>
