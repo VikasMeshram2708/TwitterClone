@@ -10,6 +10,10 @@
 
     * [x] RecentTweets
 
+* [x] Authentication and Authorization
+
+    * [x] 0Auth 
+
 * [ ] Like, Share, Bookmark functionalities.
 
 ### API

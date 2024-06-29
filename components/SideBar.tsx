@@ -1,8 +1,13 @@
 import { Bookmark, Contact, Home, Store } from "lucide-react";
 import React from "react";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import { getSession } from "@auth0/nextjs-auth0";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
-export default function SideBar() {
+export default async function SideBar() {
+  const session = await getSession();
+  const user = session?.user;
   return (
     <section className="min-h-screen bg-slate-800 text-white w-full max-w-[20rem] flex flex-col">
       <h1 className="text-white text-3xl font-bold text-center pt-14">
@@ -28,9 +33,20 @@ export default function SideBar() {
           </li>
         </ul>
         <div className="mt-auto mb-6">
-          <Button variant="secondary" className="w-full">
-            Login
-          </Button>
+          {user && (
+            <Button variant="destructive" className="w-full h-12">
+              <Avatar>
+                <AvatarImage src={user?.picture} />
+                <AvatarFallback>{user?.given_name}</AvatarFallback>
+              </Avatar>
+              <Link href="/api/auth/logout">Logout</Link>
+            </Button>
+          )}
+          {!user && (
+            <Button variant="secondary" className="w-full">
+              <Link href="/api/auth/login">Login</Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>
