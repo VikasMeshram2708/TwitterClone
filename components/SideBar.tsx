@@ -9,7 +9,7 @@ export default async function SideBar() {
   const session = await getSession();
   const user = session?.user;
   return (
-    <section className="min-h-screen bg-slate-800 text-white w-full max-w-[20rem] flex flex-col">
+    <section className="h-[100vh] sticky top-0 bg-slate-800 text-white w-full max-w-[20rem] flex flex-col">
       <h1 className="text-white text-3xl font-bold text-center pt-14">
         Twitter
       </h1>

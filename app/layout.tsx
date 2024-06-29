@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import { QueryClient, QueryClientProvider } from "react-query";
 import Wrapper from "./Wrapper";
-import { TweetContext } from "./context/TweetContext";
-import { TweetState } from "./context/TweetState";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         <body className={inter.className}>
-          <TweetState>
             <Wrapper>{children}</Wrapper>
-          </TweetState>
         </body>
       </UserProvider>
     </html>
