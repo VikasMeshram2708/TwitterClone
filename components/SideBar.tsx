@@ -25,11 +25,11 @@ export default async function SideBar() {
           </li>
           <li className="hover:bg-slate-950 cursor-pointer flex items-center gap-3 px-4 py-2 rounded">
             <Store />
-            Store
+            About Us
           </li>
           <li className="hover:bg-slate-950 cursor-pointer flex items-center gap-3 px-4 py-2 rounded">
             <Contact />
-            Contact
+            Contact Us
           </li>
         </ul>
         <div className="mt-auto mb-6">

@@ -1,7 +1,12 @@
+'use client'
+
+import { useTweet } from "@/app/context/TweetState";
 import { SampleTweets } from "@/seed/SampleTweets";
 import React from "react";
 
 export default function RecentTweets() {
+  // @ts-ignore
+  const { data } = useTweet();
   return (
     <section className="bg-slate-800 p-4">
       <h2 className="text-2xl font-bold text-white mb-6">Recent Tweets</h2>

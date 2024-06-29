@@ -14,10 +14,10 @@
 
   - [x] 0Auth
 
-- [ ] React Query for Data Mutation.
+- [x] React Query for Data Mutation.
 
 - [ ] Like, Share, Bookmark functionalities.
 
 ### API
 
-- [ ] CRUD Tweets API.
+- [x] CRUD Tweets API.
