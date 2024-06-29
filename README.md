@@ -2,20 +2,22 @@
 
 ### Todo
 
-* [x] Sidebar
+- [x] Sidebar
 
-* [x] RightBar
-    
-    * [x] TweetInput
+- [x] RightBar
 
-    * [x] RecentTweets
+  - [x] TweetInput
 
-* [x] Authentication and Authorization
+  - [x] RecentTweets
 
-    * [x] 0Auth 
+- [x] Authentication and Authorization
 
-* [ ] Like, Share, Bookmark functionalities.
+  - [x] 0Auth
+
+- [ ] React Query for Data Mutation.
+
+- [ ] Like, Share, Bookmark functionalities.
 
 ### API
 
-* [ ] CRUD Tweets API.
+- [ ] CRUD Tweets API.
