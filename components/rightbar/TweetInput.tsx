@@ -1,27 +1,22 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
-/** eslint-disable react/no-unescaped-entities **/
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { SingleTweetSchema } from "@/models/TweetModel";
 import toast, { Toaster } from "react-hot-toast";
+import { useMutation, useQueryClient } from "react-query";
 
 export default function TweetInput() {
+  const query = useQueryClient();
+
   const { user, isLoading } = useUser();
-  // @ts-ignore
-  // const { saveTweet } = useTweet();
 
   const [tweetMsg, setTweetMsg] = useState("");
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-
-      if (!user) {
-        return toast.error("Login first");
-      }
-
+  const mutation = useMutation({
+    mutationKey: ["tweet"],
+    mutationFn: async () => {
       const tweetConfig = {
         author: user?.name,
         authorEmail: user?.email,
@@ -33,6 +28,10 @@ export default function TweetInput() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(tweetConfig),
+        cache: "no-cache",
+        next: {
+          revalidate: 60,
+        },
       });
 
       const result = await response.json();
@@ -43,7 +42,24 @@ export default function TweetInput() {
         console.log("Failed to tweet.");
       }
       toast.success("Tweeted");
-      Promise.resolve();
+    },
+    onSuccess: () => {
+      query.invalidateQueries({
+        queryKey: ["tweet"],
+      });
+      setTweetMsg("");
+    },
+  });
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      if (!user) {
+        return toast.error("Login first");
+      }
+
+      mutation.mutate();
     } catch (error) {
       console.log(`Something went wrong. Failed to tweet. ${error}`);
     }
