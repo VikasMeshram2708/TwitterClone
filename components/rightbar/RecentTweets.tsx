@@ -3,7 +3,14 @@
 // import { SampleTweets } from "@/seed/SampleTweets";
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Heart, Pencil, Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  Heart,
+  Pencil,
+  Share,
+  Share2,
+  Trash2,
+} from "lucide-react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import toast from "react-hot-toast";
 
@@ -101,8 +108,6 @@ export default function RecentTweets() {
         }),
       });
       const result = await response.json();
-      // console.log(result);
-      // console.log("tweet disliked", tweetMsgId);
     },
     onSuccess: () => {
       query.invalidateQueries(["tweet"]);
@@ -154,22 +159,29 @@ export default function RecentTweets() {
                       color="white"
                       className="cursor-pointer"
                     />
+                    {/* <ExternalLink color="white" /> */}
                   </div>
                 ) : (
                   <>
                     {tweet?.liked ? (
-                      <Heart
-                        onClick={() => dislikeMutation.mutate(tweet?.id)}
-                        fill="red"
-                        color="white"
-                      />
+                      <div className="flex items-center gap-2">
+                        <Heart
+                          onClick={() => dislikeMutation.mutate(tweet?.id)}
+                          fill="red"
+                          color="white"
+                        />
+                        {/* <ExternalLink color="white" /> */}
+                      </div>
                     ) : (
-                      <Heart
-                        onClick={() => {
-                          likeMutation.mutate(tweet?.id);
-                        }}
-                        color="white"
-                      />
+                      <div className="flex items-center gap-2">
+                        <Heart
+                          onClick={() => {
+                            likeMutation.mutate(tweet?.id);
+                          }}
+                          color="white"
+                        />
+                        {/* <ExternalLink color="white" /> */}
+                      </div>
                     )}
                   </>
                 )}

@@ -24,7 +24,7 @@ t logged in.
 
 - [x] React Query for Data Mutation.
 
-- [ ] Like, Share, Bookmark functionalities.
+- [x] Like functionalities.
 
 ### API
 
