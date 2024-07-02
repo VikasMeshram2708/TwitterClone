@@ -3,7 +3,7 @@
 // import { SampleTweets } from "@/seed/SampleTweets";
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Pencil, Trash2 } from "lucide-react";
+import { Heart, Pencil, Trash2 } from "lucide-react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,7 @@ interface iTweet {
   id: string;
   author: string;
   content: string;
+  liked: boolean;
   authorEmail: string;
   createdAt: string;
   updatedAt: string;
@@ -52,7 +53,59 @@ export default function RecentTweets() {
       query.invalidateQueries({
         queryKey: ["tweet"],
       });
-      toast.success('tweet deleted')
+      toast.success("tweet deleted");
+    },
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: async (tweetMsgId: string) => {
+      if (!user) {
+        toast.error("Login first.");
+        Promise.resolve();
+      }
+
+      const response = await fetch("/api/liketweet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tweetId: tweetMsgId,
+          liked: true,
+        }),
+      });
+      const result = await response.json();
+      // console.log(result);
+      // console.log("tweet liked", tweetMsgId);
+    },
+    onSuccess: () => {
+      query.invalidateQueries(["tweet"]);
+    },
+  });
+
+  const dislikeMutation = useMutation({
+    mutationFn: async (tweetMsgId: string) => {
+      if (!user) {
+        toast.error("Login first.");
+        Promise.resolve();
+      }
+
+      const response = await fetch("/api/liketweet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tweetId: tweetMsgId,
+          liked: false,
+        }),
+      });
+      const result = await response.json();
+      // console.log(result);
+      // console.log("tweet disliked", tweetMsgId);
+    },
+    onSuccess: () => {
+      query.invalidateQueries(["tweet"]);
     },
   });
 
@@ -88,7 +141,7 @@ export default function RecentTweets() {
                     </p>
                   </div>
                 </div>
-                {user && user?.name === tweet?.author ?  ( 
+                {user && user?.name === tweet?.author ? (
                   <div className="flex items-center gap-3">
                     <Trash2
                       onClick={() => deleteMutation.mutate(tweet?.id)}
@@ -103,7 +156,22 @@ export default function RecentTweets() {
                     />
                   </div>
                 ) : (
-                  <></>
+                  <>
+                    {tweet?.liked ? (
+                      <Heart
+                        onClick={() => dislikeMutation.mutate(tweet?.id)}
+                        fill="red"
+                        color="white"
+                      />
+                    ) : (
+                      <Heart
+                        onClick={() => {
+                          likeMutation.mutate(tweet?.id);
+                        }}
+                        color="white"
+                      />
+                    )}
+                  </>
                 )}
               </div>
               <p className="text-white">{tweet.content}</p>

@@ -29,3 +29,5 @@ t logged in.
 ### API
 
 - [x] CRUD Tweets API.
+
+* [x] Like API.

@@ -11,10 +11,10 @@ export const TweetSchema = z.object({
       message: "tweet must not exclude more than 500 characters.",
     }),
   authorEmail: z.string().email(),
+  liked: z.boolean(),
 });
 
 export type TweetSchemaType = z.infer<typeof TweetSchema>;
-
 
 export const SingleTweetSchema = z.object({
   tweetMsg: z
@@ -28,3 +28,9 @@ export const SingleTweetSchema = z.object({
 });
 
 export type SingleTweetSchemaType = z.infer<typeof SingleTweetSchema>;
+
+export const TweetLikeSchema = z.object({
+  tweetMsg: z.boolean(),
+});
+
+export type TweetLikeSchemaType = z.infer<typeof TweetLikeSchema>;

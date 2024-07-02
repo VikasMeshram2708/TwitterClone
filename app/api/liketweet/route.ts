@@ -1,26 +1,35 @@
 import { ConnectToDb } from "@/lib/Db";
 import { prismaInstance } from "@/lib/PrismaInstance";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/binary";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-export const GET = async (request: NextRequest) => {
+interface TweetLikeSchema {
+  tweetId: string;
+  liked: boolean;
+}
+export const POST = async (request: NextRequest) => {
   try {
+    // Sanitize the incoming data
+    const incomingData: TweetLikeSchema = await request.json();
+
     // Connect to DB
     await ConnectToDb();
 
-    // Fetch all the recent tweets
-    const allTweets = (await prismaInstance.tweet?.findMany()).reverse();
+    // do the business
+    await prismaInstance.tweet?.update({
+      where: {
+        id: incomingData?.tweetId,
+      },
+      data: {
+        liked: incomingData?.liked,
+      },
+    });
 
     // return the response
-    return NextResponse.json(
-      {
-        data: allTweets,
-      },
-      {
-        status: 201,
-      }
-    );
+    return NextResponse.json({
+      message: "Tweet liked",
+    });
   } catch (error) {
     const err = error as Error;
     if (err instanceof PrismaClientKnownRequestError) {

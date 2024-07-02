@@ -21,6 +21,7 @@ export const POST = async (request: NextRequest) => {
         author: incomingData?.author,
         content: incomingData?.content,
         authorEmail: incomingData?.authorEmail,
+        liked: incomingData?.liked,
       },
     });
 

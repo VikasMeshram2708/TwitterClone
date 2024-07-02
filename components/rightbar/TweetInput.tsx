@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import toast, { Toaster } from "react-hot-toast";
 import { useMutation, useQueryClient } from "react-query";
+import { boolean } from "zod";
 
 export default function TweetInput() {
   const query = useQueryClient();
@@ -13,6 +14,7 @@ export default function TweetInput() {
   const { user, isLoading } = useUser();
 
   const [tweetMsg, setTweetMsg] = useState("");
+  const [likeTweet, setLikeTweet] = useState(false);
 
   const mutation = useMutation({
     mutationKey: ["tweet"],
@@ -21,6 +23,7 @@ export default function TweetInput() {
         author: user?.name,
         authorEmail: user?.email,
         content: tweetMsg,
+        liked: likeTweet,
       };
       const response = await fetch("/api/createtweet", {
         method: "POST",
@@ -41,13 +44,16 @@ export default function TweetInput() {
         alert(result?.message);
         console.log("Failed to tweet.");
       }
-      toast.success("Tweeted");
     },
     onSuccess: () => {
       query.invalidateQueries({
         queryKey: ["tweet"],
       });
+      toast.success("Tweeted");
       setTweetMsg("");
+    },
+    onError: () => {
+      toast.error("falied to tweet");
     },
   });
 
@@ -78,6 +84,7 @@ export default function TweetInput() {
           }
           type="text"
           placeholder="enter your message here..."
+          className="text-lg"
           disabled={isLoading}
         />
         <Button
